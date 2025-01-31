@@ -8,21 +8,23 @@ const intl = new Intl.NumberFormat("en-US", {
 
 // this style of function declaration shows better logs in stack trace instead of an anonymous arrow function
 export default function Order() {
-  const [pizzaTypes, setPizzaTypes] = useState([]);
   const [pizzaType, setPizzaType] = useState("pepperoni");
   const [pizzaSize, setPizzaSize] = useState("M");
+  const [pizzaTypes, setPizzaTypes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   let price, selectedPizza;
-
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
+    price = intl.format(
+      selectedPizza.sizes ? selectedPizza.sizes[pizzaSize] : "",
+    );
   }
 
   async function fetchPizzaTypes() {
-    const pizzaRes = await fetch("/api/pizzas");
-    const pizzaJson = await pizzaRes.json();
-    setPizzaTypes(pizzaJson);
+    const pizzasRes = await fetch("/api/pizzas");
+    const pizzasJson = await pizzasRes.json();
+    setPizzaTypes(pizzasJson);
     setLoading(false);
   }
 
@@ -88,15 +90,19 @@ export default function Order() {
             </div>
           </div>
           <button type="submit">Add to Cart</button>
+          </div>
+        {loading ? (
+          <h3>LOADING …</h3>
+        ) : (
           <div className="order-pizza">
             <Pizza
-              name="Pepperoni"
-              description="another pep pizza"
-              image="/public/pizzas/pepperoni.webp"
+              name={selectedPizza.name}
+              description={selectedPizza.description}
+              image={selectedPizza.image}
             />
-            <p>$13.47</p>
+            <p>{price}</p>
           </div>
-        </div>
+        )}
       </form>
     </div>
   );
