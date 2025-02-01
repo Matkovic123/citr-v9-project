@@ -42,7 +42,7 @@ export default function Order() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            setCart([...cart, { pizza: selectedPizza, size: pizzaSize }]);
+            setCart([...cart, { pizza: selectedPizza, size: pizzaSize, price: price }]);
           }}
         >
           <div>
