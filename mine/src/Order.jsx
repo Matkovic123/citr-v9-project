@@ -16,12 +16,25 @@ export default function Order() {
   const [loading, setLoading] = useState(true);
 
   let price, selectedPizza;
-  
+
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
     price = intl.format(
       selectedPizza.sizes ? selectedPizza.sizes[pizzaSize] : "",
     );
+  }
+
+  async function checkout() {
+    setLoading(true);
+    await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    }),
+      setCart([]);
+    setLoading(false);
   }
 
   async function fetchPizzaTypes() {
@@ -42,7 +55,10 @@ export default function Order() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            setCart([...cart, { pizza: selectedPizza, size: pizzaSize, price: price }]);
+            setCart([
+              ...cart,
+              { pizza: selectedPizza, size: pizzaSize, price: price },
+            ]);
           }}
         >
           <div>
@@ -114,7 +130,7 @@ export default function Order() {
           )}
         </form>
       </div>
-      {loading ? <h2>LOADING...</h2> : <Cart cart={cart} />}
+      {loading ? <h2>LOADING...</h2> : <Cart checkout={checkout} cart={cart} />}
     </div>
   );
 }
