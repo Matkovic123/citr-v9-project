@@ -1,7 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import prettier from "eslint-config-prettier";
-import reactPlugin from "eslint-plugin-react"
+import reactPlugin from "eslint-plugin-react";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -11,8 +11,8 @@ export default [
     settings: {
       react: {
         version: "detect",
-      }
-    }
+      },
+    },
   },
   reactPlugin.configs.flat["jsx-runtime"],
   {
@@ -22,13 +22,14 @@ export default [
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
-        }
-      }
+        },
+      },
     },
     rules: {
       "react/no-unescaped-entities": "off",
       "react/prop-types": "off",
-    }
+      "no-undef": "error"
+    },
   },
   prettier,
-]
+];
