@@ -5,12 +5,21 @@ import getPastOrders from "../api/getPastOrders";
 import getPastOrder from "../api/getPastOrder";
 import Modal from "../Modal";
 import { priceConverter } from "../useCurrency";
-
+import ErrorBoundary from "../ErrorBoundary";
 export const Route = createLazyFileRoute("/past")({
-  component: PastOrdersRoute,
+  component: ErrorBoundaryWrappedPastOrderRoutes,
 });
 
+function ErrorBoundaryWrappedPastOrderRoutes() {
+  return (
+    <ErrorBoundary>
+      <PastOrdersRoute />
+    </ErrorBoundary>
+  );
+}
+
 function PastOrdersRoute() {
+  throw new Error("Error!");
   const [page, setPage] = useState(1);
   const [focusedOrder, setFocusedOrder] = useState();
   const { isLoading, data } = useQuery({
@@ -48,7 +57,7 @@ function PastOrdersRoute() {
           {data.map((order) => (
             <tr key={order.order_id}>
               <td>
-                <button onClick={()=> setFocusedOrder(order.order_id)}>
+                <button onClick={() => setFocusedOrder(order.order_id)}>
                   {order.order_id}
                 </button>
               </td>
